@@ -34,4 +34,4 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           -H "Content-Type: application/octet-stream" \
           https://uploads.github.com/repos/safeith/demo/releases/${{ env.RELEASE_ID }}/assets?name=manifest.json \
-          --data-binary "manifest.json"
+          --data-binary "@manifest.json"
