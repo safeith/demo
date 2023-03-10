@@ -1,0 +1,12 @@
+name: Revert
+
+on:
+  workflow_dispatch:
+      
+jobs:
+  revert:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+      env
+
