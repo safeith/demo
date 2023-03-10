@@ -15,5 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        latest_release_version=$(curl -s -L -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/safeith/demo/releases/latest | jq .tag_name | grep -Eo '[0-9]+')
-        echo $latest_release_version
+        LATEST_RELEASE=$(curl -s -L -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/safeith/demo/releases/latest | jq .tag_name | grep -Eo '[0-9]+')
+        echo "NEW_RELEASE=$((LATEST_RELEASE + 1)" >> $GITHUB_ENV
+
+    - run: |
+        curl -L \                                                                                                                                                             INT ✘  NORMAL  10:20:35 
+          -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/safeith/demo/releases \
+          -d '{"tag_name":"v$NEW_RELEASE","target_commitish":"main","name":"v$NEW_RELEASE","body":"Description of the release","draft":false,"prerelease":false,"generate_release_notes":false}' 
