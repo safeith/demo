@@ -15,28 +15,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        LATEST_RELEASE=$(curl -s -L -H 'Accept: application/vnd.github+json' -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/safeith/demo/releases/latest | jq .tag_name | grep -Eo '[0-9]+' || echo 0)
+        LATEST_RELEASE=$(curl -s -L \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -H 'X-GitHub-Api-Version: 2022-11-28' \
+          https://api.github.com/repos/safeith/demo/releases/latest | jq .tag_name | grep -Eo '[0-9]+' || echo 0)
         echo "NEW_RELEASE=$((LATEST_RELEASE + 1))" >> $GITHUB_ENV
 
     - run: |
-        REPONSE=$(curl -s -L -X POST \
+        RESPONSE=$(curl -s -L -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/safeith/demo/releases \
           -d '{"tag_name":"v${{ env.NEW_RELEASE }}","target_commitish":"main","name":"v${{ env.NEW_RELEASE }}","body":"Description of the release","draft":false,"prerelease":false,"generate_release_notes":false}')
-        echo "RELEASE_ID=$(echo $RESPONSE | jq .id)" >> $GITHUB_ENV
-        echo $RESPONSE | jq 
-        echo $REPONSE | jq .id
+      echo "RELEASE_ID=$(echo $RESPONSE | jq .id)" >> $GITHUB_ENV
 
     - run: |
         echo "This is the manifest of release ${{ env.NEW_RELEASE }}" >> manifest.json
-        zip -r manifest.zip manifest.json
+        #zip -r manifest.zip manifest.json
         curl -s -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
           -H "X-GitHub-Api-Version: 2022-11-28" \
           -H "Content-Type: application/octet-stream" \
-          https://uploads.github.com/repos/safeith/demo/releases/${{ env.RELEASE_ID }}/assets?name=manifest.zip \
-          --data-binary "manifest.zip"
+          https://uploads.github.com/repos/safeith/demo/releases/${{ env.RELEASE_ID }}/assets?name=manifest.json \
+          --data-binary "manifest.json"
