@@ -26,6 +26,8 @@ jobs:
           https://api.github.com/repos/safeith/demo/releases \
           -d '{"tag_name":"v${{ env.NEW_RELEASE }}","target_commitish":"main","name":"v${{ env.NEW_RELEASE }}","body":"Description of the release","draft":false,"prerelease":false,"generate_release_notes":false}')
         echo "RELEASE_ID=$(echo $RESPONSE | jq .id)" >> $GITHUB_ENV
+        echo $RESPONSE | jq 
+        echo $REPONSE | jq .id
 
     - run: |
         echo "This is the manifest of release ${{ env.NEW_RELEASE }}" >> manifest.json
