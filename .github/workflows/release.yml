@@ -6,15 +6,16 @@ on:
       - closed
     branches:
       - main
-        #    paths:
-        #      - 'src/**'
+    paths:
+      - 'src/**'
 
 jobs:
-  if_merged:
+  Release:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-    - run: |
+    - name: Discover the latest release
+      run: |
         LATEST_RELEASE=$(curl -s -L \
           -H 'Accept: application/vnd.github+json' \
           -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
@@ -23,7 +24,8 @@ jobs:
 
         echo "NEW_RELEASE=$((LATEST_RELEASE + 1))" >> $GITHUB_ENV
 
-    - run: |
+    - name: Create the new release
+      run: |
         RESPONSE=$(curl -s -L -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
@@ -32,8 +34,9 @@ jobs:
           -d '{"tag_name":"v${{ env.NEW_RELEASE }}","target_commitish":"main","name":"v${{ env.NEW_RELEASE }}","body":"Publish the release ${{ env.NEW_RELEASE }}","draft":false,"prerelease":false,"generate_release_notes":false}')
 
         echo "RELEASE_ID=$(echo $RESPONSE | jq .id)" >> $GITHUB_ENV
-    
-    - run: |
+
+    - name: Create and upload the manifest file
+      run: |
         echo "This is the manifest of release ${{ env.NEW_RELEASE }}" >> manifest.json
         curl -s -L \
           -X POST \
