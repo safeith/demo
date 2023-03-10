@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
+      echo True
       echo "You are reverting to ${{ env.GITHUB_REF_NAME }}"
       echo "The manifest file coutent of this release is"
       curl https://github.com/safeith/demo/releases/download/${{ env.GITHUB_REF_NAME }}/manifest.json
