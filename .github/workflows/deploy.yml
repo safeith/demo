@@ -8,5 +8,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-      env
-
+        ehco 1
+        env
