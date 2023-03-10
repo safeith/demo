@@ -19,7 +19,7 @@ jobs:
         echo "NEW_RELEASE=$((LATEST_RELEASE + 1))" >> $GITHUB_ENV
 
     - run: |
-        curl -L \                                                                                                                                                             INT ✘  NORMAL  10:20:35 
+        curl -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"\
